@@ -5,7 +5,7 @@ export const blobToUrl = (data: BlobPart) => {
   return url;
 };
 
-export const blobToBase64Async = (blob: Blob) => {
+export const blob2Base64 = (blob: Blob) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -27,7 +27,7 @@ export const blobToBase64Async = (blob: Blob) => {
   });
 };
 
-const urlToBase64Async = (url) => {
+export const url2Base64 = (url) => {
   // Image对象转base64
   function imageToBase64(image) {
     const canvas = document.createElement("canvas");
@@ -64,7 +64,7 @@ const urlToBase64Async = (url) => {
   });
 };
 
-const loadImage = (src: string) => {
+export const loadImage = (src: string) => {
   return new Promise((resolve, reject) => {
     const image = new Image();
 
@@ -78,20 +78,4 @@ const loadImage = (src: string) => {
 
     image.src = src;
   });
-};
-
-const getPositionX = (config) => {
-  const { align = "center", pageWidth, imgWidth, padding } = config || {};
-
-  if (align === "center") {
-    return (pageWidth - imgWidth) / 2;
-  }
-
-  if (align === "left") {
-    return padding;
-  }
-
-  if (align === "right") {
-    return pageWidth - padding - imgWidth;
-  }
 };
