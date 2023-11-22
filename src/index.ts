@@ -1,6 +1,6 @@
 import JsPdf from "jspdf";
 import "jspdf-autotable";
-import { blob2Base64, blobToUrl, loadImage, url2Base64 } from "./utils";
+import { blob2Base64, blobToUrl, loadImage, url2Base64, isBlob } from "./utils";
 
 type AlignType = "left" | "center" | "right";
 type PaddingType = number | { left: number; top: number; right: number; bottom: number };
@@ -29,7 +29,7 @@ class JspdfUse {
     this.pageHeight = pdf.internal.pageSize.getHeight();
   }
 
-  async drawImg(img: BlobPart, {
+  async drawImg(img: string | Blob, {
     x = this.x,
     y = this.y,
     width,
@@ -47,32 +47,32 @@ class JspdfUse {
     const _padding = typeof this.padding === 'object' ? (this.padding.left + this.padding.right) : this.padding;
     const validMaxWidth = this.pageWidth - _padding;
     
+    // TODO 和下面流程有冗余
     const _img = await (async () => {
-      if (type === 'blob') {
+      if (type === 'blob' || isBlob(img)) {
         const url = blobToUrl(img);
         
         return await loadImage(url);
       }
-      
-      
+
       return await loadImage(img);
     })();
-    
+
     const imgBase64 = await (async () => {
-      if (type === 'base64') {
+      if (type === 'base64' && typeof img === 'string') {
         return img;
       }
-      
-      if (type === 'url') {
+
+      if (type === 'url' && typeof img === 'string') {
         return await url2Base64(img);
       }
-      
-      if (type === 'blob') {
+
+      if (type === 'blob' && isBlob(img)) {
         return await blob2Base64(img);
       }
-      
+
       throw new Error('Image Error');
-    })();
+    })() as string;
 
     const { width: imgWidth, height: imgHeight } = _img;
     

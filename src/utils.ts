@@ -36,14 +36,14 @@ export const url2Base64 = (url) => {
 
     canvas.width = width;
     canvas.height = height;
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d")!;
     context.drawImage(image, 0, 0, width, height);
     return canvas.toDataURL("image/png");
   }
   // 回调方式
   function urlToBase64(
     imgUrl: string,
-    callback: (url: string) => void | null = null
+    callback?: (url: string) => void
   ) {
     let image = new Image();
 
@@ -64,7 +64,7 @@ export const url2Base64 = (url) => {
   });
 };
 
-export const loadImage = (src: string) => {
+export const loadImage = (src: string): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
     const image = new Image();
 
@@ -78,4 +78,8 @@ export const loadImage = (src: string) => {
 
     image.src = src;
   });
+};
+
+export const isBlob = (param: any): param is Blob => {
+  return param instanceof Blob;
 };
