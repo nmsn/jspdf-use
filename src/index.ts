@@ -120,18 +120,25 @@ class JspdfUse {
       fontSize = this.fontSize,
       align = "center",
       padding = this.padding,
+      maxWidth,
     }: {
       x: number;
       y: number;
       fontSize: number;
       align: AlignType;
       padding: PaddingType;
+      maxWidth: number;
     }
   ) {
     // TODO ts 类型上没有 pdf.internal.getFontSize 实际可执行
     const textWidth =
       (this.pdf.getStringUnitWidth(text) * this.pdf.getFontSize()) /
       this.pdf.internal.scaleFactor;
+    
+    const _maxWidth = Math.max(maxWidth, this.pageWidth);
+    const needLineBreak = textWidth > _maxWidth;
+    
+    const { w: blockTextWidth, h: blockTextHeight } =  this.pdf.getTextDimensions(text, { maxWidth: _maxWidth });
 
     const _x = (() => {
       const paddingLeft = typeof padding === "object" ? padding.left : padding;
